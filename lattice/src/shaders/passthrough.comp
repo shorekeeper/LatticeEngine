@@ -1,0 +1,31 @@
+#version 450
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+layout(set = 0, binding = 0, rgba8) uniform readonly  image2D inputImage;
+layout(set = 0, binding = 1, rgba8) uniform writeonly image2D outputImage;
+
+layout(push_constant) uniform PushConstants {
+    int   width;
+    int   height;
+    float time;
+} pc;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    if (pos.x >= pc.width || pos.y >= pc.height) return;
+
+    vec4 color = imageLoad(inputImage, pos);
+
+    // vignette: darken edges to prove the pipeline works 
+    vec2  uv   = (vec2(pos) + 0.5) / vec2(pc.width, pc.height);
+    float dist = length(uv - 0.5) * 1.414;           // 0..1 from center to corner
+    float vig  = smoothstep(1.2, 0.4, dist);          // soft falloff
+    color.rgb *= mix(0.15, 1.0, vig);
+
+    // subtle warm tint so the effect is unmistakable
+    color.r = min(color.r * 1.05, 1.0);
+    color.b *= 0.95;
+
+    imageStore(outputImage, pos, color);
+}

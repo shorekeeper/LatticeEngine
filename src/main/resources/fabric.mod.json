@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "latticeeng",
+  "version": "${version}",
+  "name": "LatticeEng",
+  "description": "Hybrid lighting engine via Vulkan compute (GL↔VK interop).",
+  "authors": ["Synergyst"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["org.synergyst.latticeeng.LatticeEng"],
+    "client": ["org.synergyst.latticeeng.client.LatticeEngClient"]
+  },
+  "mixins": ["latticeeng.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21",
+    "java": ">=21"
+  }
+}
